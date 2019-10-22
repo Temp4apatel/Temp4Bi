@@ -1,8 +1,7 @@
 from mast_stat import MastStat
 from mast_data_reader import MastDataReader
 from show_help import ShowHelp
-import datetime
-from datetime import timedelta
+from datetime import datetime
 
 path_to_csv = "Mobile Phone Masts.csv"
 
@@ -29,13 +28,18 @@ def run_command(command):
         mastreader = MastDataReader(path_to_csv)
         lease25year = mastreader.list_filtered(lambda x: x[9] == "25")
         print_list(lease25year)
-    elif command.startswith("--stat"):
+    elif command.startswith("--mastcount"):
         maststate = MastStat()
         stat = maststate.get_tenant_mast_count(MastDataReader(path_to_csv).get_all(), 6)
         print_dict(stat)
-    elif command == "--exit":
-        pass
-
+    elif command.startswith("--rentreport"):
+        fmt = "%d %b %Y"
+        start_date = datetime(1999, 6, 1)
+        end_date = datetime(2007, 8, 31)
+        
+        mastreader = MastDataReader(path_to_csv)
+        lease25year = mastreader.list_filtered(lambda x: start_date < datetime.strptime(x[7], fmt) < end_date)
+        print_list(lease25year)
 
 command = input()
 run_command(command)
